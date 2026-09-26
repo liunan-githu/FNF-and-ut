@@ -1,0 +1,41 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://5n5gad7ghs8d"
+path="res://.godot/imported/hachicro.TTF-6b2d71cd04a41dd08fb4fcba13728d8e.fontdata"
+
+[deps]
+
+source_file="res://Engine/Text/Fonts/hachicro.TTF"
+dest_files=["res://.godot/imported/hachicro.TTF-6b2d71cd04a41dd08fb4fcba13728d8e.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=1
+generate_mipmaps=false
+disable_embedded_bitmaps=true
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+modulate_color_glyphs=false
+hinting=1
+subpixel_positioning=1
+keep_rounding_remainders=true
+oversampling=4.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[{
+"chars": [],
+"glyphs": [],
+"name": "새 구성",
+"size": Vector2i(16, 0)
+}]
+language_support={}
+script_support={}
+opentype_features={}

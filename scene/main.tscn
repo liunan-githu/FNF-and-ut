@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://5e6571qk7dbb"]
+
+[ext_resource type="Script" uid="uid://6vdyr1yg78vn" path="res://script/player.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://ur78h308dg8e" path="res://assets/room1.png" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(60, 100)
+
+[node name="Main" type="Node2D" unique_id=749840850]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=771705882]
+scale = Vector2(3, 3)
+texture = ExtResource("2")
+centered = false
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=1925780636]
+position = Vector2(450, 434)
+motion_mode = 1
+script = ExtResource("1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=613488733]
+position = Vector2(-2, -16)
+scale = Vector2(3, 3)
+offset = Vector2(0, -19.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=859293231]
+position = Vector2(0, -50)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=696045738]
+position = Vector2(8, -22)
+limit_left = -317
+limit_top = 283
+limit_right = 1723
+limit_bottom = 1050

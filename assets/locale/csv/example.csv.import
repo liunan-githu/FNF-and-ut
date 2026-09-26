@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cflxgx3umsf2r"
+
+[deps]
+
+files=["res://assets/locale/csv/example.ko.translation", "res://assets/locale/csv/example.en.translation"]
+
+source_file="res://assets/locale/csv/example.csv"
+dest_files=["res://assets/locale/csv/example.ko.translation", "res://assets/locale/csv/example.en.translation"]
+
+[params]
+
+compress=true
+delimiter=0
+unescape_keys=false
+unescape_translations=true

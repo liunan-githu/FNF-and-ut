@@ -1,0 +1,12 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# 开发用的 FNF（体积大，不进仓库）
+fnf/
+installer/output/
+dist*/
+
+# 编译/临时文件
+~*
+*.TMP

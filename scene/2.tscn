@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://b1w3lub7no5uh"]
+
+[ext_resource type="Texture2D" uid="uid://bjplg372ht6p4" path="res://logo.png" id="1_rskpq"]
+[ext_resource type="Script" uid="uid://4uth0eurq68a" path="res://script/logo.gd" id="2"]
+
+[node name="2" type="Node2D" unique_id=1598293137]
+script = ExtResource("2")
+
+[node name="Logo" type="Sprite2D" parent="." unique_id=1422339911]
+position = Vector2(316, 201)
+scale = Vector2(0.36788768, 0.3140946)
+texture = ExtResource("1_rskpq")
+
+[node name="Hint" type="Label" parent="." unique_id=726948032]
+texture_filter = 1
+offset_left = 70.0
+offset_top = 430.0
+offset_right = 570.0
+offset_bottom = 470.0
+text = "PRESS Z TO START"
+horizontal_alignment = 1

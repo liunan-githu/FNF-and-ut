@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dfh6wl7vf7owh"]
+
+[sub_resource type="GDScript" id="GDScript_aikj4"]
+resource_name = "Title"
+script/source = "extends Node
+
+func _ready():
+	var target := \"res://Core/DefaultScene/name_selection.tscn\"
+	if not global.get_frist():
+		target = \"res://Core/DefaultScene/save_loader.tscn\"
+	var container = global.get_scene_container()
+	if container:
+		container.change_scene_to_file(target)
+	else:
+		get_tree().change_scene_to_file(target)
+"
+
+[node name="title" type="Node" unique_id=958011076]
+script = SubResource("GDScript_aikj4")

@@ -1,0 +1,117 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" uid="uid://dleuqhnhqqffc" path="res://Engine/Battle/Soul/death_soul.tscn" id="1_soul"]
+[ext_resource type="FontFile" uid="uid://ddqyxuicviwwp" path="res://Engine/Text/Fonts/8-BIT WONDER.TTF" id="2_font"]
+
+[sub_resource type="GDScript" id="GDScript_gameover"]
+script/source = "extends Node2D
+
+@onready var _soul = $DeathSoul
+@onready var _label: Label = $UI/Label
+@onready var _hint: Label = $UI/Hint
+
+var _can_confirm := false
+
+
+func _ready() -> void:
+	global.set_player_can_move(false)
+	var music = global.get_Music()
+	if music != null:
+		music.stop()
+
+	# 关键：重置全局相机（否则相机还停在大地图位置，红心在画面外）
+	var sc = global.get_scene_container()
+	if sc != null and sc.has_method(\"reload_camera\"):
+		sc.reload_camera()
+
+	_label.modulate.a = 0.0
+	_hint.modulate.a = 0.0
+
+	# 红心保持默认红色（human）：显式设初始动画，先小后放大再碎裂
+	_soul.visible = true
+	_soul.self_modulate.a = 1.0
+	_soul.animation = &\"default\"
+	_soul.play()
+	_soul.scale = Vector2(0.5, 0.5)
+	_soul.died.connect(_on_soul_died)
+
+	await get_tree().create_timer(0.35).timeout
+	var grow := create_tween()
+	grow.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	grow.tween_property(_soul, \"scale\", Vector2(3, 3), 1.4)
+	await grow.finished
+	await get_tree().create_timer(0.45).timeout
+	_soul.die()
+
+
+func _on_soul_died() -> void:
+	var tw := create_tween()
+	tw.tween_property(_label, \"modulate:a\", 1.0, 0.8)
+	await tw.finished
+	_hint.modulate.a = 0.85
+	_can_confirm = true
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _can_confirm:
+		return
+	var ok := event.is_action_pressed(\"ut_confirm\")
+	if not ok and event is InputEventKey:
+		ok = event.pressed and not event.echo and event.keycode in [KEY_Z, KEY_ENTER, KEY_SPACE]
+	if ok:
+		_can_confirm = false
+		_respawn()
+
+
+func _respawn() -> void:
+	global.heal(global.player_max_hp)
+	global.set_player_can_move(true)
+	var data: Dictionary = global.get_overworld_data()
+	var room = data.get(\"room\", \"\")
+	if typeof(room) == TYPE_STRING and String(room) != \"\":
+		scene_changer.enter_room_path(room, {})
+	else:
+		scene_changer.enter_room_path(scene_changer.get_default_scene(), {})
+"
+
+[node name="GameOver" type="Node2D"]
+script = SubResource("GDScript_gameover")
+
+[node name="BG" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="DeathSoul" parent="." instance=ExtResource("1_soul")]
+position = Vector2(320, 240)
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Label" type="Label" parent="UI"]
+anchor_right = 1.0
+offset_top = 96.0
+offset_bottom = 156.0
+grow_horizontal = 2
+texture_filter = 1
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
+text = "GAME OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Hint" type="Label" parent="UI"]
+anchor_right = 1.0
+offset_top = 420.0
+offset_bottom = 452.0
+grow_horizontal = 2
+texture_filter = 1
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "PRESS Z TO CONTINUE"
+horizontal_alignment = 1
+vertical_alignment = 1
