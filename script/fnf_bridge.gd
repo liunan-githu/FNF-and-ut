@@ -4,6 +4,7 @@ extends Node
 ## 仅 Windows 生效；其他平台（含移动端）自动跳过。
 
 const ENABLED := true
+## 进入 FNF 战斗时切全屏，返回后恢复窗口化（避免开局就强制全屏放大画面）
 const FORCE_FULLSCREEN := true
 
 ## 开发时 FNF 所在目录（用 Godot 编辑器运行时走这里）
@@ -42,6 +43,7 @@ var _from_battle := false
 var _overlay_retried := false
 var _helper_checked := false
 var _transitioning := false
+var _forced_fullscreen := false
 var pending_death_pos := Vector2.ZERO
 
 var _layer: CanvasLayer
@@ -132,9 +134,6 @@ func _boot() -> void:
 	if _scene_container == null:
 		push_warning("[FNBBridge] SceneContainer not found")
 
-	if FORCE_FULLSCREEN and _scene_container != null:
-		force_fullscreen()
-
 	# 自测钩子：godot ... -- --fnf-test
 	if _has_flag("--fnf-test"):
 		print("[FNBBridge] self-test in 2s")
@@ -177,13 +176,28 @@ func _get_container() -> Object:
 	return global.get_scene_container()
 
 
-func force_fullscreen() -> void:
-	if not global:
+## 进 FNF 前切全屏（需要 SceneContainer；直接运行子场景时跳过）
+func _enter_fullscreen() -> void:
+	if not FORCE_FULLSCREEN or not global:
+		return
+	if _get_container() == null:
 		return
 	if global.has_method("get_fullscreen") and global.has_method("toggle_fullscreen"):
 		if not global.get_fullscreen():
 			global.toggle_fullscreen()
+			_forced_fullscreen = true
 			print("[FNBBridge] fullscreen on")
+
+
+## FNF 结束后恢复窗口化（只恢复我们自己切的）
+func _restore_windowed() -> void:
+	if not _forced_fullscreen:
+		return
+	_forced_fullscreen = false
+	if global and global.has_method("get_fullscreen") and global.has_method("toggle_fullscreen"):
+		if global.get_fullscreen():
+			global.toggle_fullscreen()
+			print("[FNBBridge] fullscreen off")
 
 
 # ---------------------------------------------------------------- battle detection
@@ -303,6 +317,9 @@ func start_fnf(from_battle := false, already_black := false) -> void:
 	else:
 		await _fade_to(1.0, 0.35)
 
+	# 全黑之后再切全屏，避免看到画面放大的一瞬间
+	_enter_fullscreen()
+
 	if _bus_master >= 0:
 		AudioServer.set_bus_mute(_bus_master, true)
 	get_tree().paused = true
@@ -392,6 +409,9 @@ func _finish_fnf() -> void:
 	get_tree().paused = false
 	if _bus_master >= 0:
 		AudioServer.set_bus_mute(_bus_master, false)
+
+	# 黑屏还在，静默恢复窗口化
+	_restore_windowed()
 
 	var result := _read_fnf_result(exited_pid)
 	print("[FNBBridge] FNF result: %s" % result)
