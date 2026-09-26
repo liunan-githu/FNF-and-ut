@@ -9,11 +9,10 @@
 | 东西 | 下载地址 |
 |---|---|
 | **引擎** Codename Engine | GitHub：https://github.com/CodenameCrew/CodenameEngine ／ releases：https://github.com/CodenameCrew/CodenameEngine/releases |
-| **mod** Friday Night Dustin' | GameBanana：https://gamebanana.com/mods/613322 ／ GameJolt：https://gamejolt.com/games/fridaynightdustinFULL/1012008 |
+| **mod** Friday Night Dustin' | https://github.com/lunarcleint/dustin-mod |
 
 - 引擎实测版本：**Codename Engine v1.0.1（experimental build）**
 - 下载后放到项目根目录的 `fnf\`：`fnf\CodenameEngine.exe`、`fnf\mods\dustin\`
-- 两个下载地址自带 exe 的，选一个即可，别重复放
 - FNF 侧必须的两个脚本已备份在 `installer\fnf_scripts\`：
   - `zz_dustlink.hx` → `fnf\mods\dustin\data\global\`
   - `zz_dustlink_exit.hx` → `fnf\mods\dustin\songs\`

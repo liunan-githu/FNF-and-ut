@@ -30,14 +30,10 @@ DustLegend\
 
 ### 2) mod：Friday Night Dustin'
 
-| 来源 | 地址 |
-|---|---|
-| GameBanana | https://gamebanana.com/mods/613322 |
-| GameJolt | https://gamejolt.com/games/fridaynightdustinFULL/1012008 |
+- GitHub：https://github.com/lunarcleint/dustin-mod
 
-- 上面两个下载**自带 exe**，拿到后把整个文件夹的内容放进 `fnf\` 即可
+- 这是 Codename Engine 的 modpack，克隆/下载后把内容放进 `fnf\`
 - mod 本体的目录名应为 `fnf\mods\dustin\`
-- 注意：GameBanana / GameJolt 的下载可能带的是完整游戏（含引擎），二选一即可，不要重复放
 
 ### 3) FNF 侧必需的脚本（本仓库已备份在 `installer\fnf_scripts\`）
 
@@ -79,7 +75,7 @@ DustLegend\
 
 - 框架：[UT-Godot-Engine](https://github.com/WDUT-Dev/UT-Godot-Engine)（MIT）
 - FNF 引擎：[Codename Engine](https://github.com/CodenameCrew/CodenameEngine)
-- FNF mod：[Friday Night Dustin'](https://gamebanana.com/mods/613322)
+- FNF mod：[Friday Night Dustin'](https://github.com/lunarcleint/dustin-mod)
 - Undertale 原作者：Toby Fox
 
 > 本项目为同人作品，仅供学习交流，不得商用。
