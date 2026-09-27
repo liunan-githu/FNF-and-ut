@@ -17,6 +17,7 @@ public class Win {
 	[DllImport("user32.dll")] public static extern IntPtr GetParent(IntPtr h);
 	[DllImport("user32.dll")] public static extern int GetWindowLong(IntPtr h, int i);
 	[DllImport("user32.dll")] public static extern int SetWindowLong(IntPtr h, int i, int v);
+	[DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=true)] public static extern IntPtr SetWindowLongPtr(IntPtr h, int i, IntPtr p);
 	[DllImport("user32.dll")] public static extern bool MoveWindow(IntPtr h, int x, int y, int w, int ht, bool repaint);
 	[DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr h, IntPtr after, int x, int y, int w, int ht, uint flags);
 	[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int c);
@@ -29,10 +30,14 @@ public class Win {
 	[DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetWindowText(IntPtr h, StringBuilder s, int n);
 	[DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
 	[DllImport("user32.dll")] public static extern bool GetClientRect(IntPtr h, out RECT r);
+	[DllImport("user32.dll")] public static extern bool ClientToScreen(IntPtr h, ref POINT p);
 	[DllImport("user32.dll")] public static extern int GetSystemMetrics(int i);
 	[DllImport("user32.dll")] public static extern bool GetCursorPos(out POINT p);
 	[DllImport("user32.dll")] public static extern IntPtr WindowFromPoint(POINT p);
 	[DllImport("user32.dll")] public static extern IntPtr GetAncestor(IntPtr h, uint f);
+	[DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+	[DllImport("user32.dll")] public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+	[DllImport("kernel32.dll")] public static extern uint GetCurrentThreadId();
 	public struct RECT { public int Left, Top, Right, Bottom; }
 	public struct POINT { public int X, Y; }
 	public delegate bool EnumProc(IntPtr h, IntPtr l);
@@ -72,6 +77,10 @@ $WS_SYSMENU = 0x00080000
 $WS_MINIMIZEBOX = 0x00020000
 $WS_MAXIMIZEBOX = 0x00010000
 $WS_EX_TOPMOST = 0x00000008
+$WS_EX_TOOLWINDOW = 0x00000080
+$GWLP_HWNDPARENT = -8
+$SWP_NOSIZE = 0x0001
+$SWP_NOMOVE = 0x0002
 $SWP_SHOWWINDOW = 0x0040
 $HWND_TOPMOST = [IntPtr](-1)
 
@@ -79,6 +88,27 @@ function Write-Result([string]$text) {
 	if ($ResultFile -ne "") {
 		try { [System.IO.File]::WriteAllText($ResultFile, $text) } catch {}
 	}
+}
+
+# After cross-process SetParent, keyboard focus stays on Godot's input queue.
+# Attach the FNF child thread to the Godot parent thread, then SetFocus(child),
+# so keyboard goes to FNF (mouse is routed by position, so it already worked).
+function Enable-ChildKeyboard {
+	try {
+		[uint32]$cpid = 0
+		[uint32]$ppid = 0
+		$childThread = [Win]::GetWindowThreadProcessId($child, [ref]$cpid)
+		$parentThread = [Win]::GetWindowThreadProcessId($parent, [ref]$ppid)
+		if ($childThread -eq 0 -or $parentThread -eq 0) { return }
+		if ($script:kbChildThread -ne $childThread) {
+			[Win]::AttachThreadInput($parentThread, $childThread, $true) | Out-Null
+			$script:kbChildThread = $childThread
+		}
+		$myThread = [Win]::GetCurrentThreadId()
+		[Win]::AttachThreadInput($myThread, $childThread, $true) | Out-Null
+		[Win]::SetFocus($child) | Out-Null
+		[Win]::AttachThreadInput($myThread, $childThread, $false) | Out-Null
+	} catch {}
 }
 
 $parent = [IntPtr]$ParentHwnd
@@ -117,10 +147,13 @@ function Resize-Embed {
 	[Win]::MoveWindow($child, 0, 0, $w, $h, $true) | Out-Null
 }
 
+# overlay window covers the whole parent window (title bar included) so it looks like one window
 function Resize-Overlay {
-	$sw = [Win]::GetSystemMetrics(0)
-	$sh = [Win]::GetSystemMetrics(1)
-	[Win]::MoveWindow($child, 0, 0, $sw, $sh, $true) | Out-Null
+	$r = New-Object Win+RECT
+	[Win]::GetWindowRect($parent, [ref]$r) | Out-Null
+	$w = [Math]::Max(1, $r.Right - $r.Left)
+	$h = [Math]::Max(1, $r.Bottom - $r.Top)
+	[Win]::MoveWindow($child, $r.Left, $r.Top, $w, $h, $true) | Out-Null
 }
 
 if ($Overlay) {
@@ -148,12 +181,21 @@ if ($mode -eq "overlay") {
 	$style = $style -bor $WS_POPUP -bor $WS_VISIBLE
 	[Win]::SetWindowLong($child, $GWL_STYLE, $style) | Out-Null
 	$ex = [Win]::GetWindowLong($child, $GWL_EXSTYLE)
-	[Win]::SetWindowLong($child, $GWL_EXSTYLE, $ex -bor $WS_EX_TOPMOST) | Out-Null
-	[Win]::SetWindowPos($child, $HWND_TOPMOST, 0, 0, [Win]::GetSystemMetrics(0), [Win]::GetSystemMetrics(1), $SWP_SHOWWINDOW) | Out-Null
+	[Win]::SetWindowLong($child, $GWL_EXSTYLE, $ex -bor $WS_EX_TOPMOST -bor $WS_EX_TOOLWINDOW) | Out-Null
+	# own the window by the parent: always above it, and hidden from taskbar/alt-tab
+	# -> visually and in the taskbar it behaves like a single window
+	[Win]::SetWindowLongPtr($child, $GWLP_HWNDPARENT, $parent) | Out-Null
+	# geometry comes from Resize-Overlay; here only mark topmost + show
+	[Win]::SetWindowPos($child, $HWND_TOPMOST, 0, 0, 0, 0, ($SWP_NOMOVE -bor $SWP_NOSIZE -bor $SWP_SHOWWINDOW)) | Out-Null
 }
 
 [Win]::ShowWindow($child, $SW_SHOW) | Out-Null
-if ($mode -eq "embed") { Resize-Embed } else { Resize-Overlay }
+if ($mode -eq "embed") {
+	Resize-Embed
+	Enable-ChildKeyboard
+} else {
+	Resize-Overlay
+}
 [Win]::SetForegroundWindow($child) | Out-Null
 [Win]::SetFocus($child) | Out-Null
 
@@ -167,6 +209,11 @@ while ($true) {
 	if ($mode -eq "embed") {
 		[Win]::ShowWindow($child, $SW_SHOW) | Out-Null
 		Resize-Embed
+		# keep keyboard focus on the embedded FNF while Godot is foreground
+		$fg = [Win]::GetForegroundWindow()
+		if ([Win]::GetAncestor($fg, 2) -eq $parent) {
+			Enable-ChildKeyboard
+		}
 	} else {
 		Resize-Overlay
 	}

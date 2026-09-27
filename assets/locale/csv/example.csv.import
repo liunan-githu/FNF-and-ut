@@ -6,10 +6,10 @@ uid="uid://cflxgx3umsf2r"
 
 [deps]
 
-files=["res://assets/locale/csv/example.ko.translation", "res://assets/locale/csv/example.en.translation"]
+files=["res://assets/locale/csv/example.ko.translation", "res://assets/locale/csv/example.en.translation", "res://assets/locale/csv/example.zh.translation"]
 
 source_file="res://assets/locale/csv/example.csv"
-dest_files=["res://assets/locale/csv/example.ko.translation", "res://assets/locale/csv/example.en.translation"]
+dest_files=["res://assets/locale/csv/example.ko.translation", "res://assets/locale/csv/example.en.translation", "res://assets/locale/csv/example.zh.translation"]
 
 [params]
 

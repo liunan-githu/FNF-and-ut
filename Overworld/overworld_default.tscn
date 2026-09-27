@@ -64,6 +64,54 @@ func _on_camera():
 	camerafx.transition(\"res://assets/transition/test.tres\", 2, 1, true);
 	await camerafx.finished_transition;
 	global.player_can_move = true;
+
+func _on_sans2_cutscene():
+	print(\"cutscene 触发了\");
+	var cam = $TileMap/PlayerOverworld/CameraController;
+	var old_left = cam.limit_left;
+	var tw = create_tween();
+	$TileMap/Sans2.visible = true;
+	tw.tween_property(cam, \"limit_left\", player.global_position.x - 80, 1.0).from(player.global_position.x - 160);
+	await tw.finished;
+	var textbox = stagehand.summontextbox();
+	textbox.character(false, \"SANS\", locale.get_dialogues_default(\"SANS_SP1\"));
+	await textbox.dialogue_finished;
+	await get_tree().create_timer(0.4).timeout;
+	textbox = stagehand.summontextbox();
+	textbox.character(false, \"SANS\", locale.get_dialogues_default(\"SANS_SP2\"));
+	await textbox.dialogue_finished;
+	await get_tree().create_timer(0.4).timeout;
+	textbox = stagehand.summontextbox();
+	textbox.character(false, \"SANS\", locale.get_dialogues_default(\"SANS_SP3\"));
+	await textbox.dialogue_finished;
+	await get_tree().create_timer(0.8).timeout;
+	player.set_process(false);
+	player.set_physics_process(false);
+	$TileMap/PlayerOverworld/Sprite.play(\"move_side\");
+	var ptw = create_tween();
+	ptw.tween_property(player, \"position\", player.position + Vector2(20, 0), 0.5);
+	await ptw.finished;
+	$TileMap/PlayerOverworld/Sprite.play(\"idle_side\");
+	player.set_process(true);
+	player.set_physics_process(true);
+	await get_tree().create_timer(0.6).timeout;
+	textbox = stagehand.summontextbox();
+	textbox.character(false, \"SANS\", locale.get_dialogues_default(\"SANS_SP4\"));
+	await textbox.dialogue_finished;
+	await get_tree().create_timer(1.2).timeout;
+	textbox = stagehand.summontextbox();
+	textbox.character(false, \"SANS\", locale.get_dialogues_default(\"SANS_SP5\"));
+	await textbox.dialogue_finished;
+	if fnf_bridge.intercept_encounter(sansCpp_tres):
+		while fnf_bridge.is_fnf_active():
+			await get_tree().create_timer(0.2).timeout
+		var tw2 = create_tween();
+		tw2.tween_property(cam, \"limit_left\", old_left, 1.0);
+		await tw2.finished;
+		global.player_can_move = true;
+	else:
+		global.player_can_move = true;
+		scene_changer.load_battle(sansCpp_tres);
 "
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_37vgg"]
@@ -143,7 +191,7 @@ locale_path = "res://assets/locale/dialogue/example.json"
 locale_keys = PackedStringArray("SANS_HI")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bx6vr"]
-size = Vector2(20, 199)
+size = Vector2(26, 199)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iks5l"]
 size = Vector2(1580, 20)
@@ -188,34 +236,35 @@ position = Vector2(50, 98)
 
 [node name="Sans" parent="TileMap" unique_id=1487626854 instance=ExtResource("5_umhqo")]
 dialogues = SubResource("DialogueAsset_0b7jn")
-position = Vector2(1351, 90)
+position = Vector2(1487.6836, 70.48069)
 
 [node name="trigger" type="Node2D" parent="TileMap" unique_id=1199626586]
 
 [node name="sans_battle" parent="TileMap/trigger" unique_id=193240328 instance=ExtResource("6_3seqt")]
 action = 14
-position = Vector2(229, 80)
-scale = Vector2(1, 4)
-
-[node name="on_transition_test" parent="TileMap/trigger" unique_id=1023867217 instance=ExtResource("6_3seqt")]
-action = 14
-position = Vector2(1191, 80)
-scale = Vector2(1, 4)
-
-[node name="on_encounter" parent="TileMap/trigger" unique_id=1742983212 instance=ExtResource("6_3seqt")]
-action = 12
-position = Vector2(608, 81)
+position = Vector2(231, -125)
 scale = Vector2(1, 4)
 
 [node name="shop_room" type="RoomEntranceNode" parent="TileMap/trigger" unique_id=1519311373]
 facing_direction = Vector2(0, 1)
 door_id = 1
 new_room = "uid://tw6eogrd1cju"
-offset_left = 41.0
-offset_top = 24.0
-offset_right = 81.0
-offset_bottom = 38.0
+offset_left = 40.0
+offset_top = -10.0
+offset_right = 80.0
+offset_bottom = 4.0
 pivot_offset = Vector2(18, 27)
+
+[node name="OverworldAreaTrigger" parent="TileMap" unique_id=2114939120 instance=ExtResource("6_3seqt")]
+action = 14
+position = Vector2(629, 77)
+
+[node name="Collision" parent="TileMap/OverworldAreaTrigger" index="0"]
+position = Vector2(-0.435, 0.12)
+scale = Vector2(1.58, 4.66)
+
+[node name="Sans2" parent="TileMap" unique_id=722139238 instance=ExtResource("5_umhqo")]
+position = Vector2(766, 95)
 
 [node name="ParallaxPillars" type="ParallaxBackground" parent="." unique_id=642409205]
 layer = 0
@@ -237,7 +286,7 @@ layer_1/tile_data = PackedInt32Array(589831, 5, 0, 589838, 5, 0, 589845, 5, 0, 5
 [node name="static" type="StaticBody2D" parent="." unique_id=641406691]
 
 [node name="1" type="CollisionShape2D" parent="static" unique_id=315823683]
-position = Vector2(-9, 40.5)
+position = Vector2(-13, 39)
 shape = SubResource("RectangleShape2D_bx6vr")
 
 [node name="2" type="CollisionShape2D" parent="static" unique_id=1584497393]
@@ -248,7 +297,12 @@ shape = SubResource("RectangleShape2D_bx6vr")
 position = Vector2(790, 130)
 shape = SubResource("RectangleShape2D_iks5l")
 
+[node name="4" type="CollisionShape2D" parent="static" unique_id=444408275]
+position = Vector2(790, 20)
+shape = SubResource("RectangleShape2D_iks5l")
+
 [connection signal="character_finished" from="TileMap/Sans" to="." method="_on_batle"]
 [connection signal="cutscene" from="TileMap/trigger/sans_battle" to="." method="_on_batle"]
-[connection signal="cutscene" from="TileMap/trigger/on_transition_test" to="." method="_on_camera"]
-[connection signal="cutscene" from="TileMap/trigger/on_encounter" to="." method="_on_encounter"]
+[connection signal="cutscene" from="TileMap/OverworldAreaTrigger" to="." method="_on_sans2_cutscene"]
+
+[editable path="TileMap/OverworldAreaTrigger"]

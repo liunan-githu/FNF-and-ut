@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bj6e8xllsfsj4"]
+[gd_scene format=3 uid="uid://bj6e8xllsfsj4"]
 
 [ext_resource type="Texture2D" uid="uid://be5likb3yqrq5" path="res://assets/sprite/sheet/overworld_sans.png" id="1_7io2x"]
 [ext_resource type="PackedScene" uid="uid://mh5dhu6wa6nf" path="res://Engine/Overworld/Interactions/interaction_trigger.tscn" id="2_xchb4"]
@@ -68,7 +68,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_q2kur")
 }],
-"loop": true,
+"loop": 1,
 "name": &"act",
 "speed": 5.0
 }, {
@@ -76,7 +76,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_cairb")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_down",
 "speed": 5.0
 }, {
@@ -84,7 +84,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bx85f")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_side",
 "speed": 5.0
 }, {
@@ -92,7 +92,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e240q")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_up",
 "speed": 5.0
 }, {
@@ -109,7 +109,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_n7oy6")
 }],
-"loop": true,
+"loop": 1,
 "name": &"move_down",
 "speed": 5.0
 }, {
@@ -126,7 +126,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bx85f")
 }],
-"loop": true,
+"loop": 1,
 "name": &"move_side",
 "speed": 5.0
 }, {
@@ -143,7 +143,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e240q")
 }],
-"loop": true,
+"loop": 1,
 "name": &"move_up",
 "speed": 5.0
 }]
@@ -151,7 +151,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bdrqj"]
 size = Vector2(18, 11)
 
-[node name="Sans" type="OverworldCharacterNode" node_paths=PackedStringArray("sprite", "area_interact") groups=["sans"]]
+[node name="Sans" type="OverworldCharacterNode" unique_id=1926432059 node_paths=PackedStringArray("sprite", "area_interact") groups=["sans"]]
 character = "SANS"
 sprite = NodePath("Sprite")
 area_interact = NodePath("Area")
@@ -160,18 +160,19 @@ slide_on_ceiling = false
 wall_min_slide_angle = 0.785398
 platform_on_leave = 2
 
-[node name="Sprite" type="OverworldSprite" parent="."]
+[node name="Sprite" type="OverworldSprite" parent="." unique_id=2057600581]
 alert_offset = Vector2(0, 8)
 position = Vector2(0, -16)
 sprite_frames = SubResource("SpriteFrames_shx1i")
-animation = &"idle_down"
+animation = &"idle_side"
+frame_progress = 0.70259756
 
-[node name="Area" parent="." instance=ExtResource("2_xchb4")]
+[node name="Area" parent="." unique_id=2092520717 instance=ExtResource("2_xchb4")]
 position = Vector2(0, -5.0000005)
 rotation = 3.1415927
 scale = Vector2(0.87307847, -0.48883766)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2047485869]
 position = Vector2(0, -5.5)
 shape = SubResource("RectangleShape2D_bdrqj")
 debug_color = Color(1, 1, 1, 0.419608)

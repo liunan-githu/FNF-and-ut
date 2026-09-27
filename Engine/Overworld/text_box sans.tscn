@@ -1,0 +1,204 @@
+[gd_scene format=3 uid="uid://bccfc6dtf5vet"]
+
+[ext_resource type="StyleBox" uid="uid://lx860swgqgcf" path="res://Engine/Themes/BoxBackground.tres" id="1_gp65j"]
+[ext_resource type="Texture2D" uid="uid://b11qd5emkkagu" path="res://Engine/Themes/GlobalBoxTexture.tres" id="2_au5g3"]
+[ext_resource type="PackedScene" uid="uid://cqieb06a4unb2" path="res://Engine/Main/menu_soul.tscn" id="3_aqsu8"]
+[ext_resource type="Theme" uid="uid://idhsrkqv81lv" path="res://Engine/Themes/DTMono24.tres" id="4_lo0vl"]
+[ext_resource type="Texture2D" uid="uid://cwftq0lvllvx2" path="res://assets/sprite/sans/spr_face_sansnoeyes_0.png" id="5_jh01m"]
+[ext_resource type="Texture2D" uid="uid://ls7j2jmso72f" path="res://assets/sprite/sans/spr_face_sansblink_0.png" id="6_y46fs"]
+[ext_resource type="Texture2D" uid="uid://dmn5suafngx6p" path="res://assets/sprite/sans/spr_face_sanschuckle2_0.png" id="7_suwxx"]
+[ext_resource type="Texture2D" uid="uid://bgtlx2itqcb3" path="res://assets/sprite/sans/spr_face_sanschuckle_0.png" id="8_biih8"]
+[ext_resource type="Texture2D" uid="uid://bq6m5bqdj3r4b" path="res://assets/sprite/sans/spr_face_sanswink_0.png" id="9_8bk0o"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ws6fc"]
+animations = [{
+"frames": [],
+"loop": 1,
+"name": &"act",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_y46fs")
+}],
+"loop": 1,
+"name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_suwxx")
+}],
+"loop": 1,
+"name": &"idle_side",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_biih8")
+}],
+"loop": 1,
+"name": &"idle_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_jh01m")
+}],
+"loop": 1,
+"name": &"move_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_8bk0o")
+}],
+"loop": 1,
+"name": &"move_side",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"move_up",
+"speed": 5.0
+}]
+
+[node name="TextBox" type="TextBox" unique_id=614705253]
+layer = 2
+
+[node name="Control" type="Control" parent="." unique_id=390488695]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 33.0
+offset_top = 322.0
+offset_right = 611.0
+offset_bottom = 470.0
+pivot_offset = Vector2(289, 74)
+
+[node name="Head" type="AnimatedSprite2D" parent="Control" unique_id=720080656]
+visible = false
+z_index = 1
+position = Vector2(66, 75)
+scale = Vector2(2, 2)
+
+[node name="Panel" type="Panel" parent="Control" unique_id=1108255302]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_gp65j")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Control" unique_id=1490310781]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_au5g3")
+patch_margin_left = 11
+patch_margin_top = 11
+patch_margin_right = 11
+patch_margin_bottom = 11
+
+[node name="Soul" parent="Control" unique_id=2027239289 instance=ExtResource("3_aqsu8")]
+visible = false
+position = Vector2(-33, -322)
+centered = false
+offset = Vector2(-20, 9)
+
+[node name="TextContainer" type="MarginContainer" parent="Control" unique_id=1751121369]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 121.0
+offset_top = -1.0
+offset_right = -8.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+metadata/_edit_group_ = true
+
+[node name="Text" type="TextBoxWriter" parent="Control/TextContainer" unique_id=196629934]
+clip_contents = false
+layout_mode = 2
+theme = ExtResource("4_lo0vl")
+theme_override_constants/line_separation = 2
+bbcode_enabled = true
+text = "* (정수기 이다.)
+* (물 한컵을 가져갈까? )"
+scroll_active = false
+visible_characters_behavior = 1
+
+[node name="Options" type="HBoxContainer" parent="Control/TextContainer" unique_id=1199397736]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="First" type="TextBoxOptionWriter" parent="Control/TextContainer/Options" unique_id=993719853]
+visible = false
+custom_minimum_size = Vector2(100, 30)
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 6
+theme = ExtResource("4_lo0vl")
+bbcode_enabled = true
+text = "예"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Second" type="TextBoxOptionWriter" parent="Control/TextContainer/Options" unique_id=23571014]
+visible = false
+custom_minimum_size = Vector2(100, 30)
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 6
+theme = ExtResource("4_lo0vl")
+bbcode_enabled = true
+text = "아니요"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Third" type="TextBoxOptionWriter" parent="Control/TextContainer/Options" unique_id=1329770805]
+visible = false
+custom_minimum_size = Vector2(100, 30)
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 6
+theme = ExtResource("4_lo0vl")
+bbcode_enabled = true
+text = "뭐요"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Fourth" type="TextBoxOptionWriter" parent="Control/TextContainer/Options" unique_id=1675021392]
+visible = false
+custom_minimum_size = Vector2(100, 30)
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 6
+theme = ExtResource("4_lo0vl")
+bbcode_enabled = true
+text = "고요"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="SprFaceSansnoeyes0" type="Sprite2D" parent="Control" unique_id=785258943]
+position = Vector2(76, 74)
+scale = Vector2(2.65, 2.829)
+texture = ExtResource("5_jh01m")
+
+[node name="OverworldSprite" type="OverworldSprite" parent="Control/SprFaceSansnoeyes0" unique_id=126304209]
+position = Vector2(-0.7547169, 0.3534818)
+sprite_frames = SubResource("SpriteFrames_ws6fc")
+animation = &"move_side"
+
+[connection signal="click_played" from="Control/TextContainer/Text" to="Control/TextContainer/Text" method="_on_click_played"]
+[connection signal="confirm" from="Control/TextContainer/Text" to="Control/TextContainer/Text" method="handle_confirm_signal"]
+[connection signal="skip" from="Control/TextContainer/Text" to="." method="_on_skip"]

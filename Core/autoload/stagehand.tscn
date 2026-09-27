@@ -1,28 +1,33 @@
-[gd_scene load_steps=8 format=3 uid="uid://bxambdq21t4hu"]
+[gd_scene load_steps=10 format=3 uid="uid://bxambdq21t4hu"]
 
 [ext_resource type="AudioStream" uid="uid://bhsttfwejarc4" path="res://sfx/Clicks/generic1.wav" id="5_bi6uv"]
-[ext_resource type="FontFile" uid="uid://c4lu7m3c14u4q" path="res://assets/Fonts/sans.ttf" id="6_s7wao"]
+[ext_resource type="FontFile" uid="uid://budoii6xa4dow" path="res://Engine/Text/Fonts/UNDERTALE-font/main-font.ttf" id="6_s7wao"]
 [ext_resource type="AudioStream" uid="uid://s6sq0p485acf" path="res://sfx/Clicks/sans.wav" id="6_ttt7e"]
-[ext_resource type="Texture2D" uid="uid://coveklulwsq8e" path="res://assets/sprite/sheet/sans_sheet.png" id="8_821gh"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nmtcj"]
-atlas = ExtResource("8_821gh")
-region = Rect2(131, 48, 38, 38)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lveqd"]
-atlas = ExtResource("8_821gh")
-region = Rect2(170, 48, 38, 38)
+[ext_resource type="Texture2D" uid="uid://cwftq0lvllvx2" path="res://assets/sprite/sans/spr_face_sansnoeyes_0.png" id="7_f0"]
+[ext_resource type="Texture2D" uid="uid://ls7j2jmso72f" path="res://assets/sprite/sans/spr_face_sansblink_0.png" id="7_f1"]
+[ext_resource type="Texture2D" uid="uid://bgtlx2itqcb3" path="res://assets/sprite/sans/spr_face_sanschuckle_0.png" id="7_f2"]
+[ext_resource type="Texture2D" uid="uid://dmn5suafngx6p" path="res://assets/sprite/sans/spr_face_sanschuckle2_0.png" id="7_f3"]
+[ext_resource type="Texture2D" uid="uid://bq6m5bqdj3r4b" path="res://assets/sprite/sans/spr_face_sanswink_0.png" id="7_f4"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_qxklr"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nmtcj")
+"texture": ExtResource("7_f0")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_lveqd")
+"texture": ExtResource("7_f1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_f2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_f3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_f4")
 }],
-"loop": true,
+"loop": false,
 "name": &"default",
 "speed": 5.0
 }]

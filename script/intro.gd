@@ -90,12 +90,3 @@ func _change_scene(path: String) -> void:
 		global.get_scene_container().change_scene_to_file(path)
 	else:
 		get_tree().change_scene_to_file(path)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and event.keycode == KEY_F11:
-		var mode := DisplayServer.window_get_mode()
-		if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		else:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)

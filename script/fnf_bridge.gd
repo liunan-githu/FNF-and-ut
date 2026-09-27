@@ -1,11 +1,11 @@
 extends Node
-## FNF 战斗桥：进入战斗时无缝嵌入运行 Codename Engine（另一个游戏），
+## FNF 战斗桥：进入战斗时以无边框窗口贴合覆盖运行 Codename Engine（另一个游戏），
 ## 曲终/退出后回到「尘埃传说」并把战斗判为胜利。
 ## 仅 Windows 生效；其他平台（含移动端）自动跳过。
 
 const ENABLED := true
-## 进入 FNF 战斗时切全屏，返回后恢复窗口化（避免开局就强制全屏放大画面）
-const FORCE_FULLSCREEN := true
+## 进 FNF 时强制全屏；关闭时 FNF 窗口贴合游戏窗口的位置和大小（F11 可手动全屏）
+const FORCE_FULLSCREEN := false
 
 ## 开发时 FNF 所在目录（用 Godot 编辑器运行时走这里）
 ## ⚠️ 必须是纯英文路径：CNE 在中文路径下会卡死
@@ -40,7 +40,6 @@ var _active := false
 var _pid := -1
 var _helper_pid := -1
 var _from_battle := false
-var _overlay_retried := false
 var _helper_checked := false
 var _transitioning := false
 var _forced_fullscreen := false
@@ -306,7 +305,6 @@ func start_fnf(from_battle := false, already_black := false) -> void:
 		return
 	_active = true
 	_from_battle = from_battle
-	_overlay_retried = false
 	_helper_checked = false
 
 	# 战斗触发时立刻全黑，避免 Godot 战斗画面闪现（最多 1 帧）
@@ -317,7 +315,7 @@ func start_fnf(from_battle := false, already_black := false) -> void:
 	else:
 		await _fade_to(1.0, 0.35)
 
-	# 全黑之后再切全屏，避免看到画面放大的一瞬间
+	# 开启 FORCE_FULLSCREEN 时在全黑之后再切，避免看到画面放大的一瞬间
 	_enter_fullscreen()
 
 	if _bus_master >= 0:
@@ -334,7 +332,9 @@ func start_fnf(from_battle := false, already_black := false) -> void:
 		return
 	print("[FNBBridge] FNF pid=%d" % _pid)
 
-	_spawn_helper(false)
+	# 用无边框全屏叠加：SDL/OpenFL 只在窗口是前台窗口时才收键盘，
+	# 用 SetParent 嵌入成子窗口会永远收不到键盘（鼠标按坐标派发所以正常）
+	_spawn_helper(true)
 	# 让加载期间保持黑屏（Godot 暂停仍会渲染，fade 保持在 1）
 
 
@@ -384,15 +384,10 @@ func _process(_delta: float) -> void:
 		_finish_fnf()
 		return
 
-	# 嵌入失败则自动降级为无边框全屏叠加
+	# 叠加辅助脚本的结果（失败也不影响 FNF 自己显示，只是没有覆盖定位）
 	if not _helper_checked and _helper_pid > 0 and not OS.is_process_running(_helper_pid):
 		_helper_checked = true
-		var res := _read_result()
-		print("[FNBBridge] helper result: %s" % res)
-		if res.begins_with("ERROR") and not _overlay_retried and OS.is_process_running(_pid):
-			_overlay_retried = true
-			print("[FNBBridge] embed failed -> overlay fallback")
-			_spawn_helper(true)
+		print("[FNBBridge] helper result: %s" % _read_result())
 
 
 func _finish_fnf() -> void:
@@ -410,7 +405,7 @@ func _finish_fnf() -> void:
 	if _bus_master >= 0:
 		AudioServer.set_bus_mute(_bus_master, false)
 
-	# 黑屏还在，静默恢复窗口化
+	# 黑屏还在；若之前切过全屏则在此静默恢复
 	_restore_windowed()
 
 	var result := _read_fnf_result(exited_pid)

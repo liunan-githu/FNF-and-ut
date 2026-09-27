@@ -6,10 +6,10 @@ uid="uid://bu8d4gbsf8bhf"
 
 [deps]
 
-files=["res://Engine/Text/translation.ko.translation", "res://Engine/Text/translation.en.translation"]
+files=["res://Engine/Text/translation.ko.translation", "res://Engine/Text/translation.en.translation", "res://Engine/Text/translation.zh.translation"]
 
 source_file="res://Engine/Text/translation.csv"
-dest_files=["res://Engine/Text/translation.ko.translation", "res://Engine/Text/translation.en.translation"]
+dest_files=["res://Engine/Text/translation.ko.translation", "res://Engine/Text/translation.en.translation", "res://Engine/Text/translation.zh.translation"]
 
 [params]
 

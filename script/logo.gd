@@ -44,13 +44,6 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_F11:
-			var mode := DisplayServer.window_get_mode()
-			if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
-				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			else:
-				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-			return
 		if _can_start and event.keycode in [KEY_Z, KEY_ENTER, KEY_SPACE]:
 			if global and global.get_scene_container():
 				global.get_scene_container().change_scene_to_file(NEXT_SCENE)

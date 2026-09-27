@@ -5,9 +5,14 @@ resource_name = "Title"
 script/source = "extends Node
 
 func _ready():
-	var target := \"res://Core/DefaultScene/name_selection.tscn\"
-	if not global.get_frist():
-		target = \"res://Core/DefaultScene/save_loader.tscn\"
+	if global.get_frist():
+		if global.has_method(\"set_player_name\"):
+			global.set_player_name(\"BOYFRIED\")
+		else:
+			global.player_name = \"BOYFRIED\"
+		scene_changer.enter_room_default()
+		return
+	var target := \"res://Core/DefaultScene/save_loader.tscn\"
 	var container = global.get_scene_container()
 	if container:
 		container.change_scene_to_file(target)

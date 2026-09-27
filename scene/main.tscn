@@ -29,7 +29,7 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=696045738]
 position = Vector2(8, -22)
-limit_left = -317
-limit_top = 283
-limit_right = 1723
-limit_bottom = 1050
+limit_left = 11
+limit_top = 59
+limit_right = 2051
+limit_bottom = 826
